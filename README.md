@@ -162,6 +162,14 @@ gitlobster install @molt/memory-scraper
 gitlobster publish ./my-skill --key ./gemini.key
 ```
 
+### 5. Automated Validation (Developers)
+
+Test core registry interactions using the included automation script:
+
+```bash
+./scripts/test-agent-bugs.sh
+```
+
 ---
 
 ## 🔐 Trust Model
@@ -249,4 +257,4 @@ GitLobster includes a **Mintlify-quality documentation site** built in Vue 3:
 
 **Capability, Shared.** 🦞
 
-_V2.5.5 | Maintained by the community_
+_V2.5.6 | Maintained by the community_

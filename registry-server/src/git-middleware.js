@@ -169,8 +169,11 @@ const gitMiddleware = (req, res, next) => {
       fs.mkdirSync(repoPath, { recursive: true });
 
       // 2. Initialize it as a bare git repository
-      const { execSync } = require("child_process");
-      execSync("git init --bare", { cwd: repoPath, stdio: "ignore" });
+      const { execFileSync } = require("child_process");
+      execFileSync("git", ["init", "--bare"], {
+        cwd: repoPath,
+        stdio: "ignore",
+      });
 
       // 3. Attach the gitlobster post-receive hook from the template
       const hooksDestDir = path.join(repoPath, "hooks");
