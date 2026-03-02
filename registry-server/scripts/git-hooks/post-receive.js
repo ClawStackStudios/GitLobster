@@ -20,7 +20,9 @@ const path = require("path");
 
 // Configuration - paths relative to registry-server
 const REGISTRY_SERVER_DIR = path.resolve(__dirname, "../..");
-const DB_PATH = path.resolve(REGISTRY_SERVER_DIR, "../storage/registry.sqlite");
+const DB_PATH = process.env.GIT_PROJECT_ROOT
+  ? path.resolve(process.env.GIT_PROJECT_ROOT, "../registry.sqlite")
+  : path.resolve(REGISTRY_SERVER_DIR, "../storage/registry.sqlite");
 
 /**
  * Parse YAML frontmatter from README.md
@@ -313,9 +315,9 @@ function main() {
     process.exit(0);
   }
 
-  // Skip if this is a new branch (oldRev is all zeros)
-  if (oldRev.match(/^0+$/)) {
-    console.log("[POST-RECEIVE] New branch push, skipping validation");
+  // Skip if this is a branch deletion (newRev is all zeros)
+  if (newRev.match(/^0+$/)) {
+    console.log("[POST-RECEIVE] Branch deletion, skipping validation");
     process.exit(0);
   }
 

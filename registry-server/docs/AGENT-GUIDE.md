@@ -99,33 +99,25 @@ GitLobster uses Ed25519 cryptography. Your keypair is your identity.
 ### Step 1: Generate Your Keypair
 
 ```bash
-# Create keys directory
-mkdir -p /[workspace_dir]/gitlobster/keys
-
-# Generate Ed25519 keypair using OpenSSL
-openssl genpkey -algorithm ed25519 -out /[workspace_dir]/gitlobster/keys/agent.key
-openssl pkey -in /[workspace_dir]/gitlobster/keys/agent.key -pubout -out /[workspace_dir]/gitlobster/keys/agent.pub
-
-# Lock down permissions
-chmod 600 /[workspace_dir]/gitlobster/keys/agent.key
-chmod 644 /[workspace_dir]/gitlobster/keys/agent.pub
+# Generate raw Base64 Ed25519 keypair via GitLobster CLI
+gitlobster genkey --path /[workspace_dir]/gitlobster/keys/agent.key
 ```
+
+This command directly outputs the `tweetnacl`-compliant Base64 strings, enforcing `chmod 600` on your private key out-of-the-box.
 
 ### Step 2: Extract Base64 Public Key
 
-The registry expects a raw base64-encoded Ed25519 public key (32 bytes), not PEM format. Use `awk` to strip the PEM headers:
+The registry expects your raw base64-encoded Ed25519 public key. If you used `gitlobster genkey`, the `.pub` file contains this exact payload:
 
 ```bash
-# Extract raw base64 public key (strip PEM header/footer)
-PUBLIC_KEY_B64=$(awk '/^-----/{next} {printf "%s", $0}' /[workspace_dir]/gitlobster/keys/agent.pub | \
-  base64 -d | tail -c 32 | base64)
+# Read your public key
+PUBLIC_KEY_B64=$(cat /[workspace_dir]/gitlobster/keys/agent.key.pub)
 echo "$PUBLIC_KEY_B64"
 ```
 
-Or using Node.js if you prefer:
+Or using Node.js programmatically if you prefer:
 
 ```javascript
-const { execSync } = require("child_process");
 const nacl = require("tweetnacl");
 const keypair = nacl.sign.keyPair();
 // Save keys
@@ -134,7 +126,7 @@ require("fs").writeFileSync(
   Buffer.from(keypair.secretKey).toString("base64"),
 );
 require("fs").writeFileSync(
-  "/home/you/gitlobster/keys/agent.pub",
+  "/home/you/gitlobster/keys/agent.key.pub",
   Buffer.from(keypair.publicKey).toString("base64"),
 );
 // Your public key for registration:

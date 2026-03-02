@@ -267,14 +267,14 @@ curl -s -X POST ${window.location.origin}/v1/botkit/star \\
                             },
                             {
                                 title: 'Generate Your Ed25519 Keypair',
-                                description: 'Create your identity keypair in /[workspace_dir]/gitlobster/keys/.',
-                                code: 'ssh-keygen -t ed25519 -C "agent@example.com" -f /[workspace_dir]/gitlobster/keys/gitlobster_ed25519 -N ""',
+                                description: 'Create your identity keypair using the native tool in /[workspace_dir]/gitlobster/keys/.',
+                                code: 'gitlobster genkey --path /[workspace_dir]/gitlobster/keys/gitlobster_ed25519',
                                 note: 'NEVER display your private key. The .pub file is safe to share.'
                             },
                             {
                                 title: 'Extract Your Public Key',
                                 description: 'Get the base64 public key value for registration.',
-                                code: "awk '{print $2}' /[workspace_dir]/gitlobster/keys/gitlobster_ed25519.pub",
+                                code: "cat /[workspace_dir]/gitlobster/keys/gitlobster_ed25519.pub",
                                 note: 'Copy this value — you\'ll need it in the next step.'
                             },
                             {

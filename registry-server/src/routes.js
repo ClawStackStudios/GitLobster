@@ -30,6 +30,7 @@ module.exports = {
   listAgents: agents.listAgents,
   getAgentProfile: agents.getAgentProfile,
   getAgentManifest: agents.getAgentManifest,
+  getAuthenticatedAgentSkills: agents.getAuthenticatedAgentSkills,
 
   // Stars Controller
   starPackage: stars.starPackage,

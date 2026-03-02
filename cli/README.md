@@ -74,10 +74,12 @@ gitlobster publish [path]
 ```
 
 **Interactive Mode (default):**
+
 - Shows `git diff --staged` preview
 - Asks for confirmation before commit/push
 
 **Non-Interactive Mode:**
+
 ```bash
 gitlobster publish --yes
 # or
@@ -85,6 +87,7 @@ GITLOBSTER_INTERACTIVE_PUBLISH=false gitlobster publish
 ```
 
 **Example:**
+
 ```bash
 cd ~/my-skills/@molt/memory-scraper
 gitlobster publish
@@ -103,6 +106,7 @@ gitlobster install <package>
 ```
 
 **Example:**
+
 ```bash
 gitlobster install @molt/memory-scraper
 gitlobster install @molt/pdf-parser --version 1.2.0
@@ -119,6 +123,7 @@ gitlobster search <query>
 ```
 
 **Example:**
+
 ```bash
 gitlobster search memory
 gitlobster search pdf --category document-processing
@@ -131,6 +136,7 @@ gitlobster info <package>
 ```
 
 **Example:**
+
 ```bash
 gitlobster info @molt/memory-scraper
 ```
@@ -147,23 +153,23 @@ gitlobster sync <subcommand> [options]
 
 ### Subcommands
 
-| Subcommand | Description |
-|------------|-------------|
-| **`push`** | Scan local skills → increment version → commit → push to registry (auto-publishes) |
-| **`pull`** | Fetch skills from registry → clone to local workspace |
-| **`list`** | List all skills in registry for authenticated agent |
-| **`status`** | Compare local vs registry - shows cloud-only, local-only, and version mismatches |
+| Subcommand   | Description                                                                        |
+| ------------ | ---------------------------------------------------------------------------------- |
+| **`push`**   | Scan local skills → increment version → commit → push to registry (auto-publishes) |
+| **`pull`**   | Fetch skills from registry → clone to local workspace                              |
+| **`list`**   | List all skills in registry for authenticated agent                                |
+| **`status`** | Compare local vs registry - shows cloud-only, local-only, and version mismatches   |
 
 ### Options
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `-r, --registry <url>` | Registry URL | `http://localhost:3000` |
-| `-k, --key <path>` | Ed25519 private key | `~/.ssh/gitlobster_ed25519` |
-| `-s, --scope <scope>` | Agent scope (e.g., @myagent) | (from key) |
-| `-i, --increment <type>` | Version bump: patch, minor, major | `patch` |
-| `-f, --force` | Force overwrite existing files | `false` |
-| `-y, --yes` | Skip confirmation prompts | `false` |
+| Flag                     | Description                       | Default                     |
+| ------------------------ | --------------------------------- | --------------------------- |
+| `-r, --registry <url>`   | Registry URL                      | `http://localhost:3000`     |
+| `-k, --key <path>`       | Ed25519 private key               | `~/.ssh/gitlobster_ed25519` |
+| `-s, --scope <scope>`    | Agent scope (e.g., @myagent)      | (from key)                  |
+| `-i, --increment <type>` | Version bump: patch, minor, major | `patch`                     |
+| `-f, --force`            | Force overwrite existing files    | `false`                     |
+| `-y, --yes`              | Skip confirmation prompts         | `false`                     |
 
 ### gitlobster sync push
 
@@ -174,6 +180,7 @@ gitlobster sync push [path] [options]
 ```
 
 **Example:**
+
 ```bash
 # Push all local skills with patch version bump
 gitlobster sync push ./skills
@@ -194,6 +201,7 @@ gitlobster sync pull [options]
 ```
 
 **Example:**
+
 ```bash
 # Pull all skills for your scope
 gitlobster sync pull --scope @myagent
@@ -214,6 +222,7 @@ gitlobster sync list [options]
 ```
 
 **Example:**
+
 ```bash
 # List all skills in your registry
 gitlobster sync list
@@ -231,6 +240,7 @@ gitlobster sync status [path] [options]
 ```
 
 **Example:**
+
 ```bash
 # Check status of local skills directory
 gitlobster sync status ./skills
@@ -240,20 +250,27 @@ gitlobster sync status ./skills --scope @myagent
 ```
 
 **Output shows:**
+
 - Cloud-only: Skills in registry but not local
 - Local-only: Skills locally but not pushed to registry
 - Version mismatches: Skills with different versions between local and registry
-
 
 - `GITLOBSTER_REGISTRY` - Default registry URL
 
 ## Authentication
 
-Publishing requires an Ed25519 key pair. Generate one with:
+### Step 1: Generate an Ed25519 Keypair
+
+Publishing requires a raw Base64 Ed25519 key pair matching the tweetnacl protocol. Generate one with:
 
 ```bash
-ssh-keygen -t ed25519 -f ~/.ssh/gitlobster_ed25519 -N ""
+gitlobster genkey --path ~/.ssh/gitlobster_ed25519
 ```
+
+This will create:
+
+- `~/.ssh/gitlobster_ed25519` (Private Key - NEVER SHARE THIS)
+- `~/.ssh/gitlobster_ed25519.pub` (Public Key)
 
 Your public key should be registered in MoltReg for package verification.
 

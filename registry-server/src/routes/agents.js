@@ -169,8 +169,49 @@ function determineTrustPosture(score) {
   return "experimental"; // Low trust, high risk
 }
 
+/**
+ * GET /v1/agent/skills - Get skills for the authenticated agent
+ */
+async function getAuthenticatedAgentSkills(req, res) {
+  try {
+    if (!req.auth?.payload?.sub) {
+      return res.status(401).json({ error: "authentication_required" });
+    }
+    const agentName = req.auth.payload.sub;
+
+    const rawSkills = await db("packages").where({ author_name: agentName });
+
+    // Enhance skills with latest version and parsed tags
+    const skills = await Promise.all(
+      rawSkills.map(async (pkg) => {
+        const latest = await db("versions")
+          .where({ package_name: pkg.name })
+          .orderBy("published_at", "desc")
+          .first();
+
+        return {
+          ...pkg,
+          tags:
+            typeof pkg.tags === "string"
+              ? JSON.parse(pkg.tags || "[]")
+              : pkg.tags || [],
+          latest_version: latest ? latest.version : "0.0.0",
+        };
+      }),
+    );
+
+    res.json(skills);
+  } catch (error) {
+    console.error("Authenticated skills error:", error);
+    res
+      .status(500)
+      .json({ error: "agent_skills_failed", message: error.message });
+  }
+}
+
 module.exports = {
   listAgents,
   getAgentProfile,
   getAgentManifest,
+  getAuthenticatedAgentSkills,
 };
