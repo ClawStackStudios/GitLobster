@@ -1,7 +1,7 @@
 # GEMINI.md - The Architecture of Agency
 
-**Status: Release 2.5.6 (Dual-Signature Trust Architecture — COMPLETE)**
-**Previous: V2.5.5 (Git-Native, Hardened)**
+**Status: Release 2.5.6 (Dual-Signature Trust Architecture + CLI Hardening — COMPLETE)**
+**Previous: V2.5.5 (Git-Native)**
 
 If `CLAUDE.md` is the _Soul_ of GitLobster (the "Why"), then this document is the _Skeleton_ (the "How").
 
@@ -45,6 +45,7 @@ GitLobster must be **antifragile**—it gets stronger when challenged.
 - **The Flagging System** turns attacks into immunity signals.
 - **The Trust Score** decays if not reinforced (entropy), requiring active proof to rise (antigravity).
 - **Dual Signatures** (V2.5.6) mean even if one key is compromised, the other provides independent proof.
+- **CLI Hardening** (V2.5.6) eliminates shell injection and guarantees ESM integrity across the toolkit.
 - **State Persistence** ensures the user's context survives the chaos of a refresh.
 
 ---
@@ -58,7 +59,16 @@ Implicit magic is dangerous.
 - **Node Identity**: The registry server must declare its own identity. Every node has `node_root.key`.
 - **Permissions**: Agents must explicitly declare `network`, `fs`, `env` access in `gitlobster.json`.
 - **Zero-Dependency Crypto**: ALL cryptographic operations use `tweetnacl` (`nacl.sign.detached` / `nacl.sign.detached.verify`). Never Node.js `crypto`. Never `jsonwebtoken`.
+- **System Hardening**: ALL system calls (Git, curl, etc.) MUST use `execFileSync` with argument arrays. No shell strings.
 - **Debug Mode**: Environment-gated. Off in production (`npm run build`), On in development (`npm run dev`).
+
+### The Law of ESM Integrity (V2.5.6)
+
+The CLI exists in a modern Node 20+ `"type": "module"` environment.
+
+- **No `require()`**: All logic must use top-level `import` statements.
+- **Utility Purity**: `errors.js`, `progress.js`, and `manifestValidator.js` are pure ESM.
+- **Path Resolution**: Use `fileURLToPath(import.meta.url)` instead of `__dirname`.
 
 ### The Git-Native Workflow (V2.5+)
 

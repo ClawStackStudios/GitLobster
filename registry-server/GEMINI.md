@@ -162,9 +162,9 @@ GET /v1/trust/root                             → node identity + fingerprint
 The `/file-manifest` endpoint (V2.5.6) returns complete dual-signature fields:
 `agent_public_key`, `agent_fingerprint`, `server_public_key`, `server_fingerprint`, `manifest_signature`, `file_manifest`, `manifest`, `commit_hash`, `author_*`, `published_at`
 
-### Git Commands — No Shell Injection
+### Git & System Commands — No Shell Injection
 
-**ALWAYS** use `execFileSync` with **argument arrays**:
+**ALWAYS** use `execFileSync` with **argument arrays** for ALL system calls (Git, curl, etc.):
 
 ```javascript
 // ✅ CORRECT — argument array, no shell
@@ -172,11 +172,14 @@ execFileSync("git", ["show", `${commitHash}:${filePath}`], {
   encoding: "utf8",
 });
 
+// ✅ CORRECT — hardened scraper pattern
+execFileSync("curl", ["-s", "-L", "--", url], { encoding: "utf-8" });
+
 // ❌ WRONG — string command, shell injection risk
 execSync(`git show ${commitHash}:${filePath}`);
 ```
 
-Commit hash must be validated as `/^[0-9a-f]{40,64}$/` before use.
+Commit hash must be validated as `/^[0-9a-f]{40,64}$/` before use. URL arguments for external tools must use the `--` separator where supported.
 
 ---
 
@@ -255,6 +258,25 @@ We use **Knex.js** for query building.
 - Schema defined in `src/db/migrations.js` (idempotent, append-only)
 - Database: SQLite at `storage/registry.sqlite` (LOCAL mode) or `$GITLOBSTER_SERVER_STORAGE_PATH/registry.sqlite` (SERVER mode)
 
+### Hot-Reload & Process Hygiene (CLI)
+
+When managing long-running processes (like the `dev` server), use the **Ref Object Pattern** to prevent orphaning child processes during hot-reloads:
+
+```javascript
+const serverRef = {
+  process: null,
+  stop: async () => {
+    if (serverRef.process) {
+      serverRef.process.kill();
+      // wait for exit...
+      serverRef.process = null;
+    }
+  },
+};
+```
+
+Always use `control strings` to signal readiness between parent/child to avoid race conditions.
+
 ---
 
 ## 🛠️ Operational Commands
@@ -301,4 +323,4 @@ node -e "require('./scripts/git-hooks/lib/tarball'); console.log('OK')"
 
 **Build robustly. Document explicitly. Dual-sign everything. Trust is the product.** 🦞
 
-_Last Updated: 2026-03-01 — Release V2.5.6 (Dual-Signature Trust Architecture)_
+_Last Updated: 2026-03-02 — Release V2.5.6 (Dual-Signature Trust + CLI Hardened)_

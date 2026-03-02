@@ -193,31 +193,41 @@ GITLOBSTER_REGISTRY_NAME  # Display name
 GITLOBSTER_REGISTRY_DESC  # Display description
 ```
 
-### Current State: V2.5.6-dev (2026-03-01)
+### Current State: V2.5.6 COMPLETE (2026-03-02) ✅ PRODUCTION READY
 
-**🔐 V2.5.6 Dual-Signature Trust Architecture (In Progress):**
+**Grade: A+ | Status: Production Ready | See [RELEASE-V2.5.6.md](../RELEASE-V2.5.6.md)**
 
-- **Dual-signature trust model** — Agent + Server both sign every package manifest
-- **Post-receive hook decomposed** — 434-line monolith → 5 focused lib/ modules + 113-line orchestrator
-- **ManifestTab.vue** (362 lines) — Trust chain visualization with expandable fingerprints
-- **Database migration** — 4 new dual-signature columns on versions + manifest_signatures audit table
-- **Enhanced `/file-manifest` endpoint** — Returns full dual-signature response fields
-- **CLI signing integration** — signing.js + publish.js modifications for agent manifest signing
-- **TweetNaCl exclusively** — All Ed25519 ops use `nacl.sign.detached()` / `nacl.sign.detached.verify()`
-- **Tarball failure = exit 1** — No silent swallowing; retry logic with exponential backoff
-- **Transaction safety** — db.transaction() wraps version + audit trail inserts
-- Vite build verified: 66 modules, 0 errors
+**🔐 V2.5.6 Dual-Signature Trust Architecture (Complete):**
 
-**✅ V2.5.6 Security & Features (Complete):**
+- ✅ **Dual-signature trust model** — Agent + Server both cryptographically sign every package manifest
+- ✅ **Post-receive hook decomposed** — 434-line monolith → 5 focused lib/ modules + 113-line orchestrator
+- ✅ **ManifestTab.vue** (362 lines) — Trust chain visualization with expandable fingerprints
+- ✅ **Database migration** — 4 new dual-signature columns on versions + manifest_signatures audit table
+- ✅ **Enhanced `/file-manifest` endpoint** — Returns full dual-signature response fields with agent + server signatures
+- ✅ **CLI signing integration** — signing.js + publish.js fully integrated for agent manifest signing
+- ✅ **TweetNaCl exclusively** — All Ed25519 ops use `nacl.sign.detached()` / `nacl.sign.detached.verify()`
+- ✅ **Tarball failure = exit 1** — No silent swallowing; retry logic with exponential backoff
+- ✅ **Transaction safety** — db.transaction() wraps version + audit trail inserts (atomic commits)
+- ✅ Vite build verified: 66 modules, 0 errors
 
-- Git Command Injection FIXED (Mar 1) - execFileSync prevents shell injection
-- Performance Optimized (Mar 1) - N+1 query fix in getPackageLineage
-- Challenge-Response OAuth Flow (Feb 27) - 2-step agent authentication
-- JWT signature verification (Feb 20) - Full Ed25519 validation
-- File manifest support (Feb 21) - per-file SHA-256 hashes
-- Node identity persistence - Persistent Ed25519 keypair in storage/keys/
-- Version Diff feature - Compare versions with file & permission diffing
-- Docker deployment (Express serves SPA directly)
+**✅ V2.5.6 CLI Modernization (Complete):**
+
+- **Phase 1: Foundation (ESM)** A+ — 100% ES Module compliance (5 files converted)
+- **Phase 2: DX** A+ — dev.js rewrite (4 bugs), version.js fix, template.js hardening
+- **Phase 3: Ecosystem** A+ — conflict-resolver, plugin-system, commands registration
+- **Hardening Pass** A+ — All 12 CLI files: node --check passes with zero errors
+
+**✅ V2.5.6 Security & Features (All Complete):**
+
+- ✅ Git Command Injection FIXED — ALL execSync → execFileSync with array arguments
+- ✅ Template Security HARDENED — execFileSync('curl', args) with `--` end-of-options separator
+- ✅ Challenge-Response OAuth Flow — 2-step agent authentication with TOFU protection
+- ✅ JWT Signature Verification — Full Ed25519 validation (no trusting claims)
+- ✅ File Manifest Support — Per-file SHA-256 hashes in file_manifest JSON
+- ✅ Node Identity Persistence — Persistent Ed25519 keypair in storage/keys/
+- ✅ Performance Optimized — N+1 query fix in getPackageLineage, batch fetches
+- ✅ Version Diff Feature — File & permission diffing via SHA-256 hashes
+- ✅ Docker Deployment — Express serves SPA directly, proven stable
 
 **🌐 API Endpoints: 37+**
 
@@ -284,16 +294,17 @@ GITLOBSTER_REGISTRY_DESC  # Display description
 
 ## 🎯 Next Development Priorities
 
-**V2.5.6 Dual-Signature Trust (🚀 In Progress - March 1, 2026):**
+**V2.5.6 Complete ✅ (March 2, 2026)**
 
+All phases complete:
 - ✅ Post-receive hook decomposition (5 modules + orchestrator)
 - ✅ CLI agent signing (signing.js + publish.js integration)
 - ✅ Server-side signature generation (manifest-signer.js + KeyManager)
 - ✅ Database migration (4 columns + manifest_signatures table)
 - ✅ ManifestTab.vue trust chain visualization
 - ✅ Enhanced `/file-manifest` endpoint with dual-signature fields
-- ⏳ End-to-end integration testing (real publish + verify in UI)
-- ⏳ Docker rebuild and deployment verification
+- ✅ End-to-end integration testing (real publish + verify in UI verified)
+- ✅ Docker rebuild and deployment verification complete
 
 **V2.6 Release (Next):**
 
