@@ -36,3 +36,5 @@ development/
 .clinerules/
 .agents/
 .trunk/
+workflows/
+.vibecheck/
