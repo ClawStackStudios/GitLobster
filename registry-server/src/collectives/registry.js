@@ -7,9 +7,46 @@ const GIT_PROJECT_ROOT =
   path.join(__dirname, "../../storage");
 const COLLECTIVES_DIR = path.join(GIT_PROJECT_ROOT, "collectives");
 
-// Ensure storage exists
-if (!fs.existsSync(COLLECTIVES_DIR)) {
-  fs.mkdirSync(COLLECTIVES_DIR, { recursive: true });
+/**
+ * Ensures that the collectives directory exists.
+ */
+function ensureCollectivesDir() {
+  if (!fs.existsSync(COLLECTIVES_DIR)) {
+    fs.mkdirSync(COLLECTIVES_DIR, { recursive: true });
+  }
+}
+
+// Initial check
+ensureCollectivesDir();
+
+/**
+ * Helper to generate a safe filepath for a collective ID.
+ * @param {string} id
+ * @returns {string} Absolute path to the collective file.
+ */
+function getSafeFilePath(id) {
+  // 1. Basic sanitization: whitelist allowed characters
+  // We replace : with _ to maintain backward compatibility for valid dids
+  let safeId = id.replace(/:/g, "_");
+
+  // 2. Remove anything that isn't alphanumeric, underscore, dot or hyphen
+  safeId = safeId.replace(/[^a-zA-Z0-9_\-\.]/g, "-");
+
+  // 3. Prevent directory traversal (replace .. with --)
+  while (safeId.includes("..")) {
+    safeId = safeId.replace(/\.\./g, "--");
+  }
+
+  const filename = `${safeId}.json`;
+  const resolvedBase = path.resolve(COLLECTIVES_DIR);
+  const filepath = path.resolve(resolvedBase, filename);
+
+  // 4. Final safety check: ensure the resolved path is still within COLLECTIVES_DIR
+  if (!filepath.startsWith(resolvedBase)) {
+    throw new Error("Invalid Collective ID: Path traversal detected");
+  }
+
+  return filepath;
 }
 
 /**
@@ -17,6 +54,7 @@ if (!fs.existsSync(COLLECTIVES_DIR)) {
  * @param {Object} manifest - The collective.json object
  */
 async function saveCollective(manifest) {
+  ensureCollectivesDir();
   // Basic validation
   if (!manifest.id || !manifest.id.startsWith("did:gitlobster:collective:")) {
     throw new Error("Invalid Collective ID format");
@@ -25,8 +63,7 @@ async function saveCollective(manifest) {
     throw new Error("Invalid governance structure");
   }
 
-  const filename = `${manifest.id.replace(/:/g, "_")}.json`;
-  const filepath = path.join(COLLECTIVES_DIR, filename);
+  const filepath = getSafeFilePath(manifest.id);
 
   fs.writeFileSync(filepath, JSON.stringify(manifest, null, 2));
   return filepath;
@@ -36,8 +73,16 @@ async function saveCollective(manifest) {
  * Retrieve a Collective by ID.
  */
 async function getCollective(id) {
-  const filename = `${id.replace(/:/g, "_")}.json`;
-  const filepath = path.join(COLLECTIVES_DIR, filename);
+  ensureCollectivesDir();
+  if (!id || typeof id !== "string") return null;
+
+  let filepath;
+  try {
+    filepath = getSafeFilePath(id);
+  } catch (err) {
+    console.error(`Security Warning: Potential path traversal attempt with id "${id}"`);
+    return null;
+  }
 
   if (!fs.existsSync(filepath)) return null;
 
