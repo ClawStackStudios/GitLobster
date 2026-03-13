@@ -58,7 +58,7 @@ async function getMembership(collectiveId, agentId) {
   // Normalize IDs (simple string match for MVP)
   const member = collective.governance.members.find((m) => m.id === agentId);
 
-  return member ? { role: member.role, weight: member.weight || 1 } : null;
+  return member ? { role: member.role, weight: member.weight ?? 1 } : null;
 }
 
 /**

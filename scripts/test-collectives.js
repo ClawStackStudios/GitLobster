@@ -1,5 +1,17 @@
 const fs = require("fs");
 const path = require("path");
+
+// Setup Test Env
+const TEST_ROOT = path.join(
+  __dirname,
+  "../registry-server/storage/test-collectives-env",
+);
+process.env.GITLOBSTER_STORAGE_DIR = TEST_ROOT;
+
+if (fs.existsSync(TEST_ROOT))
+  fs.rmSync(TEST_ROOT, { recursive: true, force: true });
+fs.mkdirSync(TEST_ROOT, { recursive: true });
+
 const {
   saveCollective,
   getCollective,
@@ -7,24 +19,6 @@ const {
   verifyGovernanceThreshold,
 } = require("../registry-server/src/collectives/registry");
 
-// Setup Test Env
-const TEST_ROOT = path.join(
-  __dirname,
-  "../registry-server/storage/test-collectives-env",
-);
-if (fs.existsSync(TEST_ROOT))
-  fs.rmSync(TEST_ROOT, { recursive: true, force: true });
-fs.mkdirSync(TEST_ROOT, { recursive: true });
-
-// Monkey-patch the module's internal path (simulated by setting env var before require, but here we accepted it reads env var)
-// Actually, the module reads env var at top level. We might need to reload it or trust it uses correct path if we set env var before require?
-// The module was already required.
-// For this test script to work with the *same* module instance, we rely on the fact that `registry.js` checks env var.
-// BUT since we already required it, the top-level const is fixed.
-// Solution: We'll just define the collective in the default storage location or mock fs.
-// Wait, `registry.js` uses `GITLOBSTER_STORAGE_DIR`. If I set it now, it's too late.
-// I will just use the functions as is, and let them write to `../../../storage/collectives`.
-// Implementation detail: I'll clean up `../../../storage/collectives/did_gitlobster_collective_test_dao.json` after test.
 
 const manifest = {
   "@context": "https://gitlobster.network/ctx/v1",
@@ -98,8 +92,6 @@ const manifest = {
   } catch (e) {
     console.error("Test Failed:", e);
   } finally {
-    // Cleanup if possible
-    // const file = path.join(__dirname, '../storage/collectives/did_gitlobster_collective_test_dao.json');
-    // if (fs.existsSync(file)) fs.unlinkSync(file);
+    fs.rmSync(TEST_ROOT, { recursive: true, force: true });
   }
 })();
