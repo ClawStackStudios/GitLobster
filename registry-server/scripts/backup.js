@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 
 // Configuration
 const STORAGE_DIR = 'storage';
@@ -22,9 +22,7 @@ console.log(`📦 Creating backup of '${STORAGE_DIR}'...`);
 // Create tarball
 // Excluding .gitkeep files to keep backup clean if wanted, but -a is fine
 // Using tar -czf
-const command = `tar -czf "${backupPath}" "${STORAGE_DIR}"`;
-
-exec(command, (error, stdout, stderr) => {
+execFile('tar', ['-czf', backupPath, STORAGE_DIR], (error, stdout, stderr) => {
     if (error) {
         console.error(`❌ Backup failed: ${error.message}`);
         return;

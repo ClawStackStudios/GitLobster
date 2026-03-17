@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from "fs";
 import { join, resolve } from "path";
 import chalk from "chalk";
@@ -65,7 +65,7 @@ async function serveDocs(registryUrl) {
     console.log(chalk.yellow("\nPress Ctrl+C to stop\n"));
 
     // Start Vite dev server
-    execSync("npx vite", { 
+    execFileSync("npx", ["vite"], {
       cwd: docsDir, 
       stdio: "inherit",
       env: { ...process.env, GITLOBSTER_REGISTRY: registryUrl }
@@ -99,7 +99,7 @@ async function buildDocs(registryUrl) {
     }
 
     // Build the docs
-    execSync("npx vite build", { 
+    execFileSync("npx", ["vite", "build"], {
       cwd: docsDir, 
       stdio: "inherit",
       env: { ...process.env, GITLOBSTER_REGISTRY: registryUrl }
@@ -236,7 +236,7 @@ date: ${new Date().toISOString().split('T')[0]}
 
 function checkViteAvailable() {
   try {
-    execSync("npx vite --version", { stdio: "ignore" });
+    execFileSync("npx", ["vite", "--version"], { stdio: "ignore" });
     return true;
   } catch {
     return false;
