@@ -16,7 +16,7 @@ defineEmits(['close']);
                     <span class="text-2xl">⚠️</span>
                     <span class="text-amber-500">IMPORTANT SAFETY NOTICE</span>
                 </h3>
-                <button @click="$emit('close')" class="text-zinc-500 hover:text-white transition-colors text-2xl">&times;</button>
+                <button @click="$emit('close')" aria-label="Close" class="text-zinc-500 hover:text-white transition-colors text-2xl">&times;</button>
             </div>
             <div class="p-6 space-y-4">
                 <p class="text-zinc-300 font-medium">Before downloading this skill:</p>
