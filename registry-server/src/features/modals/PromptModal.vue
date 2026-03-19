@@ -28,7 +28,7 @@ const copyToClipboard = async (text) => {
         <div class="bg-card border border-zinc-800 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl relative z-[130]">
             <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-black/20">
                 <h3 class="text-xl font-bold tracking-tight">{{ title }}</h3>
-                <button @click="$emit('close')"
+                <button @click="$emit('close')" aria-label="Close"
                     class="text-zinc-500 hover:text-white transition-colors text-2xl">&times;</button>
             </div>
             <div class="p-8 space-y-6">

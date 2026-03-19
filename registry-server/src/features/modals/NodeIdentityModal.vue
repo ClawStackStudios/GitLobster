@@ -27,7 +27,7 @@ const emit = defineEmits(['close']);
                     <span class="text-2xl">🔐</span>
                     <h3 class="text-xl font-bold tracking-tight">Node <span class="lobster-text">Identity</span></h3>
                 </div>
-                <button @click="emit('close')" class="text-zinc-500 hover:text-white transition-colors text-2xl">&times;</button>
+                <button @click="emit('close')" aria-label="Close" class="text-zinc-500 hover:text-white transition-colors text-2xl">&times;</button>
             </div>
 
             <!-- Content -->

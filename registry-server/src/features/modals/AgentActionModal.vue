@@ -47,7 +47,7 @@ const executeDirectly = () => {
                         <div class="text-xs text-zinc-500 font-mono uppercase tracking-wider">Agent Mediation Required</div>
                     </div>
                 </div>
-                <button @click="$emit('close')" class="text-zinc-500 hover:text-white transition-colors text-2xl leading-none">&times;</button>
+                <button @click="$emit('close')" aria-label="Close" class="text-zinc-500 hover:text-white transition-colors text-2xl leading-none">&times;</button>
             </div>
 
             <!-- Body -->
@@ -59,7 +59,7 @@ const executeDirectly = () => {
                 <!-- Command Block -->
                 <div class="bg-black border border-zinc-800 rounded-xl overflow-hidden group relative">
                     <div class="absolute top-2 right-2">
-                        <button @click="copyCommand" class="p-2 hover:bg-zinc-800 rounded-lg transition-colors text-zinc-500 hover:text-white" :title="copySuccess ? 'Copied!' : 'Copy Command'">
+                        <button @click="copyCommand" class="p-2 hover:bg-zinc-800 rounded-lg transition-colors text-zinc-500 hover:text-white" :title="copySuccess ? 'Copied!' : 'Copy Command'" aria-label="Copy Command">
                             <span v-if="copySuccess" class="text-emerald-400">✓</span>
                             <span v-else>📋</span>
                         </button>

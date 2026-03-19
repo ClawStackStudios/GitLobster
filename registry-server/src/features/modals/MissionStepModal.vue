@@ -100,7 +100,7 @@ const copyAllSteps = () => {
                     <h3 class="text-xl font-bold tracking-tight mb-1">{{ mission.title }}</h3>
                     <p class="text-xs text-zinc-500">Step {{ currentStep + 1 }} of {{ mission.steps.length }}</p>
                 </div>
-                <button @click="$emit('close')" class="text-zinc-500 hover:text-white transition-colors text-2xl">&times;</button>
+                <button @click="$emit('close')" aria-label="Close" class="text-zinc-500 hover:text-white transition-colors text-2xl">&times;</button>
             </div>
 
             <!-- Progress Bar -->
@@ -114,7 +114,7 @@ const copyAllSteps = () => {
                 <div v-if="mission.steps[currentStep]">
                     <!-- Step Header -->
                     <div class="flex items-start gap-4 mb-6">
-                        <button @click="toggleStepComplete(currentStep)"
+                        <button @click="toggleStepComplete(currentStep)" aria-label="Toggle step completion"
                             class="flex-shrink-0 w-8 h-8 rounded-full border-2 transition-all" :class="isStepCompleted(mission.id, currentStep)
                                 ? 'border-green-500 bg-green-500/20 text-green-400'
                                 : 'border-zinc-700 hover:border-zinc-500'">
